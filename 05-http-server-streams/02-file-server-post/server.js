@@ -21,7 +21,28 @@ server.on('request', (req, res) => {
       } else {
         fs.stat(filepath, (err) => {
           if (err) {
-            
+            const fileStream = new fs.createWriteStream(filepath);
+            const limitStream = new LimitSizeStream({limit: 2 ** 20});
+            req.pipe(limitStream).pipe(fileStream);
+
+            limitStream.on('error', () => {
+              fs.unlink(filepath, (err) => {if (err) console.log(err);});
+              res.statusCode = 413;
+              res.end('File is too big');
+              return
+            });
+
+            req.on('aborted', () => {
+              fs.unlink(filepath, (err) => {
+                if (err) console.log(err);
+              })
+            })
+
+            fileStream.on('finish', () => {
+              res.statusCode = 201;
+              res.end('OK');
+            })
+
           } else {
             res.statusCode = 409;
             res.end('File already exist');
