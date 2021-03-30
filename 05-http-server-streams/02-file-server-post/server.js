@@ -21,7 +21,7 @@ server.on('request', (req, res) => {
       } else {
         fs.stat(filepath, (err) => {
           if (err) {
-            const fileStream = new fs.createWriteStream(filepath);
+            const fileStream = fs.createWriteStream(filepath);
             const limitStream = new LimitSizeStream({limit: 2 ** 20});
             req.pipe(limitStream).pipe(fileStream);
 
