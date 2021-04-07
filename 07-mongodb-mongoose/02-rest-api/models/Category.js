@@ -18,3 +18,4 @@ const categorySchema = new mongoose.Schema({
 });
 
 module.exports = connection.model('Category', categorySchema);
+
