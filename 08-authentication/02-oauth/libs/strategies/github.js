@@ -10,5 +10,6 @@ module.exports = new GithubStrategy({
   scope: ['user:email'],
   session: false,
 }, function(accessToken, refreshToken, profile, done) {
+// Так и не смог найти параметр, в котором github передаёт мне email... Локально протестировать не получилось
   authenticate('github', get(profile, 'emails[0].value'), profile.username, done);
 });
